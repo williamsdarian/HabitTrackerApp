@@ -32,7 +32,7 @@ class NewHabitActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        editTitleView = findViewById(R.id.edit_word)
+        editTitleView = findViewById(R.id.edit_task)
 
         //Logic block to determine whether we are updating an exiting word
         //Or creating a new word
