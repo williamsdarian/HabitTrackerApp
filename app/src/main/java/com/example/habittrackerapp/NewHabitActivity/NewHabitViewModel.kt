@@ -35,7 +35,7 @@ class NewHabitViewModel(private val repository: HabitRepository) : ViewModel() {
     }
 
     fun delete(habit: Habit) = viewModelScope.launch {
-        repository.deletHabitbyId(word)
+        repository.deleteHabitById(habit)
     }
 }
 
