@@ -1,10 +1,20 @@
 package com.example.habittrackerapp.MainActivity
 
+import android.Manifest
+import android.app.AlarmManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
@@ -30,6 +40,10 @@ class MainActivity : AppCompatActivity() {
         val secondActivityIntent = Intent(this, NewHabitActivity::class.java)
         secondActivityIntent.putExtra("EXTRA_ID",id)
         this.startActivity(secondActivityIntent)
+    }
+
+    companion object {
+        private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
     }
 
     /**
@@ -65,6 +79,62 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewHabitActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    // Method to check and request necessary permissions on startup
+    private fun checkAndRequestPermissions() {
+        // Request notification permission (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkAndRequestNotificationPermission()
+        }
+
+        // Request exact alarm permission (Android 12+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            checkAndRequestExactAlarmPermission()
+        }
+    }
+
+    // Request notification permission for Android 13+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun checkAndRequestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED) {
+
+            // Request the POST_NOTIFICATIONS permission
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), NOTIFICATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    // Request exact alarm permission for Android 12+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun checkAndRequestExactAlarmPermission() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (!alarmManager.canScheduleExactAlarms()) {
+            // Show permission dialog for exact alarms
+            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+            Toast.makeText(this, "Enable Alarm Permissions to continue...", Toast.LENGTH_SHORT)
+                .show()
+            startActivity(intent)
+        }
+    }
+
+    // Handle the result of permission requests
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            NOTIFICATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
     }
 }

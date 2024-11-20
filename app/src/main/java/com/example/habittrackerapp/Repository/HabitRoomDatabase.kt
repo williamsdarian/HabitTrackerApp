@@ -54,9 +54,9 @@ public abstract class HabitRoomDatabase: RoomDatabase() {
             habitDao.deleteAll()
 
             // Add sample words.
-            var word = Habit(null,"Hello", "Basic description")
+            var word = Habit(null,"Hello", "Basic description", "", false)
             habitDao.insert(word)
-            word = Habit(null,"World!", "Lorem Ipsum Dolor...")
+            word = Habit(null,"World!", "Lorem Ipsum Dolor...", "", false)
             habitDao.insert(word)
 
             // TODO: Add your own words!

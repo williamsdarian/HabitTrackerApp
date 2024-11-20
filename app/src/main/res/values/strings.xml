@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">RoomWithAView2024</string>
-    <string name="button_save">Add Task</string>
-    <string name="button_delete">Delete Tasks</string>
-    <string name="button_delete_all">Delete All Task</string>
-    <string name="task_content">Task Content</string>
-    <string name="task_name">Task…</string>
+    <string name="app_name">HabitTrackerApp</string>
+    <string name="button_save">Save</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_delete_all">Delete All Habits</string>
+    <string name="task_content">Habit Detail</string>
+    <string name="habit_name">Habit…</string>
     <string name="due_date">Due Date (MM/DD/YYYY)</string>
-    <string name="empty_not_saved">Word not saved because it is empty.</string>
-    <string name="task_complete">Task Completed</string>
-    <string name="todo_list">ToDoList</string>
+    <string name="empty_not_saved">Habit not saved because it is empty.</string>
+    <string name="task_complete">Habit Completed</string>
+    <string name="habit_tracker">Habit Tracker</string>
     <string name="share">Share</string>
 </resources>
