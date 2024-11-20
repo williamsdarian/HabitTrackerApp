@@ -17,7 +17,7 @@ class HabitReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val habitName = intent.getStringExtra("taskName") ?: "Habit Reminder"
-        val channelId = "task_reminder_channel"
+        val channelId = "habit_reminder_channel"
         createNotificationChannel(context, channelId)
 
         val notification = NotificationCompat.Builder(context, channelId)
@@ -41,8 +41,8 @@ class HabitReminderReceiver : BroadcastReceiver() {
     }
 
     private fun createNotificationChannel(context: Context, channelId: String) {
-        val name = "Task Reminder Channel"
-        val descriptionText = "Channel for task reminders"
+        val name = "Habit Reminder Channel"
+        val descriptionText = "Channel for habit reminders"
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel = NotificationChannel(channelId, name, importance)
         channel.description = descriptionText

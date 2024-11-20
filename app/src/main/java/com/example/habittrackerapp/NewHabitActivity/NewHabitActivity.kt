@@ -32,7 +32,6 @@ class NewHabitActivity : AppCompatActivity() {
     private lateinit var editWordDetail: EditText
     private lateinit var editTextDate: EditText
     private lateinit var checkBox: CheckBox
-    private var dueDate: Long = 0L
     private var isComplete: Boolean = false
     val newHabitViewModel: NewHabitViewModel by viewModels {
         NewHabitViewModelFactory((application as HabitsApplication).repository)
