@@ -47,9 +47,9 @@ class NewHabitActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        editTitleView = findViewById(R.id.edit_task)
+        editTitleView = findViewById(R.id.edit_habit_name)
         editWordDetail = findViewById(R.id.edit_content)
-        editTextDate = findViewById(R.id.edit_date)
+        editTextDate = findViewById(R.id.edit_reminder)
         checkBox = findViewById(R.id.task_checkbox)
 
         //Logic block to determine whether we are updating an exiting word
@@ -75,7 +75,7 @@ class NewHabitActivity : AppCompatActivity() {
         }
 
         //Get reference to the button
-        val saveButton = findViewById<Button>(R.id.button_save)
+        val saveButton = findViewById<Button>(R.id.button_save_habit)
         //Set the click listener functionality
         //If text is empty, return with nothing
         saveButton.setOnClickListener {
@@ -116,11 +116,11 @@ class NewHabitActivity : AppCompatActivity() {
         }
 
         // Delete a task and prompt the user to confirm deletion
-        val deleteButton = findViewById<Button>(R.id.button_delete)
+        val deleteButton = findViewById<Button>(R.id.button_cancel_habit)
         deleteButton.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Delete Task")
-                .setMessage("Are you sure you want to delete this task?")
+                .setMessage("Are you sure you want to delete this habit?")
                 .setPositiveButton("Yes") { dialog, which ->
                     if(id != -1) {
                         newHabitViewModel.delete(Habit(id, editTitleView.text.toString(), editWordDetail.text.toString(),editTextDate.text.toString(), isComplete))
@@ -133,22 +133,9 @@ class NewHabitActivity : AppCompatActivity() {
         }
 
         // Get task data and share as text
-        val shareButton = findViewById<Button>(R.id.share_habit)
-        shareButton.setOnClickListener {
-            val habitTitle = editTitleView.text.toString()
-            val habitDetail = editWordDetail.text.toString()
-
-            if ((!TextUtils.isEmpty(habitTitle)) && (!TextUtils.isEmpty(habitDetail))) {
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, "Task: $habitTitle\nDetails: $habitDetail")
-                    type = "text/plain"
-                }
-                val shareIntent = Intent.createChooser(sendIntent, "Share Task")
-                startActivity(shareIntent)
-            } else {
-                Toast.makeText(this, "Habit information is missing!", Toast.LENGTH_SHORT).show()
-            }
+        val chooseIconButton = findViewById<Button>(R.id.icon_selector)
+        chooseIconButton.setOnClickListener {
+            // **TO-DO** Add functionality for this
         }
 
     }

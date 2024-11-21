@@ -10,4 +10,7 @@
     <string name="task_complete">Habit Completed</string>
     <string name="habit_tracker">Habit Tracker</string>
     <string name="share">Share</string>
+    <string name="create_new_habit">Create New Habit</string>
+    <string name="set_reminder_optional">Set Reminder (Optional)</string>
+    <string name="choose_icon">Choose Icon</string>
 </resources>

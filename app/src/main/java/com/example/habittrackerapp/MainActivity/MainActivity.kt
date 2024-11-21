@@ -1,6 +1,7 @@
 package com.example.habittrackerapp.MainActivity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Get reference to recyclerView object
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        val recyclerView = findViewById<RecyclerView>(R.id.habit_list)
         //Create adapter class, passing the launchNewWordActivity callback
         val adapter = HabitListAdapter(this::launchNewHabitActivity)
         //Set the adapter for the recyclerView to the adapter object
