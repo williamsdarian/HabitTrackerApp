@@ -22,4 +22,9 @@ class HabitRepository(private val habitDao: HabitDao) {
     suspend fun update(habit: Habit){
         habitDao.update(habit)
     }
+
+    @WorkerThread
+    suspend fun deleteHabitById(habit: Habit) {
+        habit.id?.let { habitDao.deleteHabitById(it) }
+    }
 }

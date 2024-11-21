@@ -33,6 +33,10 @@ class NewHabitViewModel(private val repository: HabitRepository) : ViewModel() {
     fun update(habit: Habit) = viewModelScope.launch {
         repository.update(habit)
     }
+
+    fun delete(habit: Habit) = viewModelScope.launch {
+        repository.deleteHabitById(habit)
+    }
 }
 
 class NewHabitViewModelFactory(private val repository: HabitRepository) : ViewModelProvider.Factory {

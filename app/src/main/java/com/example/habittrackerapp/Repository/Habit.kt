@@ -8,5 +8,7 @@ import androidx.room.PrimaryKey
 data class Habit (
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name="title") val title:String,
-    @ColumnInfo(name="desc") val desc:String
+    @ColumnInfo(name="desc") val desc:String,
+    @ColumnInfo(name="date") val date:String,
+    @ColumnInfo(name="isComplete") val isComplete:Boolean
 )
