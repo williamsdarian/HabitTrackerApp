@@ -11,7 +11,7 @@
         android:id="@+id/new_habit_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/purple_500"
+        android:background="@color/primary_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -80,6 +80,8 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="150dp"
         android:text="@string/choose_icon"
+        android:backgroundTint="@color/highlight_color"
+        android:textColor="@color/text_color"
         app:layout_constraintTop_toBottomOf="@id/edit_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -103,6 +105,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/button_save"
+        android:backgroundTint="@color/highlight_color"
+        android:textColor="@color/text_color"
         app:layout_constraintTop_toBottomOf="@id/icon_selector"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -114,6 +118,8 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/highlight_color"
+        android:textColor="@color/text_color"
         app:layout_constraintTop_toBottomOf="@id/button_save_habit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
