@@ -96,10 +96,10 @@ class NewHabitActivity : AppCompatActivity() {
                 val title = editTitleView.text.toString()
                 val detail = editWordDetail.text.toString()
                 val date = editTextDate.text.toString()
-                if(newHabitViewModel.word.value?.id == null){
+                if (id > -1) {
+                    newHabitViewModel.update(Habit(id, title, detail, date, isComplete))
+                } else {
                     newHabitViewModel.insert(Habit(null, title, detail, date, isComplete))
-                }else{
-                    newHabitViewModel.word.value?.let { it1 -> newHabitViewModel.update(it1) }
                 }
 
                 // Schedule the reminder if the due date is in the future
