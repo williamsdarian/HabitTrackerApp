@@ -8,7 +8,6 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Insets.add
 import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
@@ -199,7 +198,15 @@ class NewHabitActivity : AppCompatActivity() {
     // store time in milliseconds
     @SuppressLint("SetTextI18n")
     private fun displaySelectedDateTime(calendar: Calendar) {
-        val selectedTime = "${calendar.get(Calendar.HOUR_OF_DAY)}:${String.format("%02d", calendar.get(Calendar.MINUTE))}"
+        var am_pm = ""
+        if(calendar.get(Calendar.AM_PM) == 0) {
+            am_pm = "AM"
+        }
+        else {
+            am_pm = "PM"
+        }
+
+        val selectedTime = "${calendar.get(Calendar.HOUR)}:${String.format("%02d", calendar.get(Calendar.MINUTE))} ${am_pm}"
 
         editTextDate.setText(selectedTime)
         dueDate = calendar.timeInMillis
