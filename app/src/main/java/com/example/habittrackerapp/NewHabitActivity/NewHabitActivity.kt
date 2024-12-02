@@ -107,7 +107,7 @@ class NewHabitActivity : AppCompatActivity() {
                     setReminder(title, dueDate)
                 }
                 // IF the user did not set a time reminder, then set one for 9am next day
-                else if (dueDate == 0L)
+                else if (dueDate == 0L || editWordDetail.text.toString() == "")
                 {
                     // Set a notification for the next day at 9 AM
                     val calendar = Calendar.getInstance()
