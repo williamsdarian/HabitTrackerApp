@@ -2,6 +2,11 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.HabitTrackerApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_color</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="android:colorBackground">@color/background_color</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
