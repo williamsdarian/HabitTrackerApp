@@ -23,26 +23,11 @@
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello, Welcome!"
+            android:text="@string/habit_tracker_application"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:layout_gravity="center" />
     </androidx.appcompat.widget.Toolbar>
-
-    <!-- Progress Tracker -->
-    <GridLayout
-        android:id="@+id/progress_grid"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_margin="16dp"
-        android:columnCount="7"
-        android:rowCount="4"
-        android:background="@drawable/grid_background"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        <!-- Add dynamic content for grid -->
-    </GridLayout>
 
     <!-- Habit List -->
     <androidx.recyclerview.widget.RecyclerView
@@ -50,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/progress_grid"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fab"

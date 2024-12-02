@@ -59,6 +59,8 @@
     <!-- Input: Reminder Setting -->
     <EditText
         android:id="@+id/edit_reminder"
+        android:inputType="none|time"
+        android:focusable="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/set_reminder_optional"

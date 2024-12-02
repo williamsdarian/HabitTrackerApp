@@ -1,11 +1,14 @@
 package com.example.habittrackerapp.NewHabitActivity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.PendingIntent
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Insets.add
 import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
@@ -32,6 +35,7 @@ class NewHabitActivity : AppCompatActivity() {
     private lateinit var editWordDetail: EditText
     private lateinit var editTextDate: EditText
     private lateinit var checkBox: CheckBox
+    private var dueDate: Long = 0L
     private var isComplete: Boolean = false
     val newHabitViewModel: NewHabitViewModel by viewModels {
         NewHabitViewModelFactory((application as HabitsApplication).repository)
@@ -74,6 +78,10 @@ class NewHabitActivity : AppCompatActivity() {
             }
         }
 
+        editTextDate.setOnClickListener{
+            showTimePickerDialog()
+        }
+
         //Get reference to the button
         val saveButton = findViewById<Button>(R.id.button_save_habit)
         //Set the click listener functionality
@@ -95,20 +103,26 @@ class NewHabitActivity : AppCompatActivity() {
                     newHabitViewModel.word.value?.let { it1 -> newHabitViewModel.update(it1) }
                 }
 
-                // Set a notification for the next day at 9 AM
-                val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, 1) // Move to the next day
-                calendar.set(Calendar.HOUR_OF_DAY, 9) // Set hour to 9 AM
-                calendar.set(Calendar.MINUTE, 0)      // Set minute to 0
-                calendar.set(Calendar.SECOND, 0)      // Set second to 0
-                calendar.set(Calendar.MILLISECOND, 0) // Set millisecond to 0
+                // Schedule the reminder if the due date is in the future
+                if (dueDate > System.currentTimeMillis()) {
+                    setReminder(title, dueDate)
+                }
+                // IF the user did not set a time reminder, then set one for 9am next day
+                else if (dueDate == 0L)
+                {
+                    // Set a notification for the next day at 9 AM
+                    val calendar = Calendar.getInstance()
+                    calendar.add(Calendar.DAY_OF_YEAR, 1)
+                    calendar.set(Calendar.HOUR_OF_DAY, 9)
+                    calendar.set(Calendar.MINUTE, 0)
+                    calendar.set(Calendar.SECOND, 0)
+                    calendar.set(Calendar.MILLISECOND, 0)
 
-                val nextDay9Am = calendar.timeInMillis
+                    val nextDay9Am = calendar.timeInMillis
+                    setReminder(title, nextDay9Am)
 
-                // Schedule the reminder for 9 AM the next day
-                setReminder(title, nextDay9Am)
+                }
 
-                //replyIntent.putExtra(EXTRA_REPLY, word)
                 setResult(Activity.RESULT_OK)
             }
             //End the activity
@@ -157,5 +171,37 @@ class NewHabitActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Cannot set exact alarms without permission", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    // Show the time
+    private fun showTimePickerDialog() {
+        val calendar = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePickerDialog = TimePickerDialog(
+            this,
+            { _, selectedHour, selectedMinute ->
+                calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                calendar.set(Calendar.MINUTE, selectedMinute)
+                calendar.set(Calendar.SECOND, 0)
+
+                displaySelectedDateTime(calendar)
+            },
+            hour, minute, false
+        )
+        timePickerDialog.show()
+    }
+    // Update the EditText to display both the selected date and time
+    // store time in milliseconds
+    @SuppressLint("SetTextI18n")
+    private fun displaySelectedDateTime(calendar: Calendar) {
+        val selectedTime = "${calendar.get(Calendar.HOUR_OF_DAY)}:${String.format("%02d", calendar.get(Calendar.MINUTE))}"
+
+        editTextDate.setText(selectedTime)
+        dueDate = calendar.timeInMillis
     }
 }

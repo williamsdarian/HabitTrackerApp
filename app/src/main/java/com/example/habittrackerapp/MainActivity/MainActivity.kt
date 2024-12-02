@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        checkAndRequestPermissions()
 
         //Get reference to recyclerView object
         val recyclerView = findViewById<RecyclerView>(R.id.habit_list)
