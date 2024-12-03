@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.habittrackerapp.Calendar.CalendarDialogFragment
 import com.example.habittrackerapp.R
 import com.example.habittrackerapp.Repository.Habit
 import com.example.habittrackerapp.HabitsApplication
@@ -151,6 +152,10 @@ class NewHabitActivity : AppCompatActivity() {
             // **TO-DO** Add functionality for this
         }
 
+        val calendarViewButton = findViewById<Button>(R.id.calendarView)
+        calendarViewButton.setOnClickListener{
+            CalendarDialogFragment.showDialog(supportFragmentManager)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
