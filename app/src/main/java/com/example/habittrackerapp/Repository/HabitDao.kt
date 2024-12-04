@@ -5,11 +5,13 @@ import androidx.room.Insert
 import androidx.room.MapInfo
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.TypeConverters
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 @Dao
-
+@TypeConverters(Converters::class) // Use the Converters for this DAO
 interface HabitDao {
     @MapInfo(keyColumn = "id")
     @Query("SELECT * FROM habit_table ORDER BY title ASC")
@@ -26,4 +28,34 @@ interface HabitDao {
 
     @Query("DELETE FROM habit_table WHERE id = :id")
     suspend fun deleteHabitById(id: Int)
+
+
+    //get habit by ID
+    @Query("SELECT * FROM habit_table WHERE id = :habitId LIMIT 1")
+    suspend fun getHabitById(habitId: Int): Habit?
+
+    @Query("SELECT completedDates FROM habit_table WHERE id = :habitId")
+    suspend fun getCompletedDates(habitId: Int): List<String>
+
+    @Query("UPDATE habit_table SET completedDates = :completedDates WHERE id = :habitId")
+    suspend fun updateCompletedDates(habitId: Int, completedDates: List<String>)
+
+
+
+
+
+
+
+
+    // TODO: below are functions for utilizing localDate
+
+//    //query to updateCompletedDates
+//    @Query("UPDATE habit_table SET completedDates = :completedDates WHERE id = :habitId")
+//    suspend fun updateCompletedDates(habitId: Int, completedDates: List<LocalDate>)
+//
+//
+//    //query to retrieve list of completed dates
+//    @Query("SELECT completedDates FROM habit_table WHERE id = :habitId")
+//    suspend fun getCompletedDates(habitId: Int): List<LocalDate?>
+
 }

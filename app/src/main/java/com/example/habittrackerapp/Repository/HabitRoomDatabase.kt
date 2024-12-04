@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Habit::class), version = 1, exportSchema = false)
-
+@Database(entities = arrayOf(Habit::class), version = 2, exportSchema = false)
+@TypeConverters(Converters::class)
 public abstract class HabitRoomDatabase: RoomDatabase() {
     abstract fun habitDao(): HabitDao
 
@@ -54,12 +56,16 @@ public abstract class HabitRoomDatabase: RoomDatabase() {
             habitDao.deleteAll()
 
             // Add sample words.
-            var word = Habit(null,"Hello", "Basic description", "", false)
+            var word = Habit(null,"Hello", "Basic description", "", false, emptyList())
             habitDao.insert(word)
-            word = Habit(null,"World!", "Lorem Ipsum Dolor...", "", false)
+            word = Habit(null,"World!", "Lorem Ipsum Dolor...", "", false, emptyList())
             habitDao.insert(word)
 
-            // TODO: Add your own words!
+
+
+
+        //when implenting the streaks in a ideal workflow the user will never be able to slkect a date further than the current day, thus the streak number can be determined by taking the total number of consecutive compelted dayas
+        //for testing purposes we can jsut do it witha  counter adn have it preset ot have 1,2,3,4 of decmeber all filled out. and then we can have another task that breaks and just hard code whatevver we decide the streak to be
         }
     }
 }
