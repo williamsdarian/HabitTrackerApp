@@ -10,8 +10,11 @@
     <string name="task_complete">Habit Completed</string>
     <string name="habit_tracker">Habit Tracker</string>
     <string name="share">Share</string>
-    <string name="create_new_habit">Create New Habit</string>
+    <string name="create_new_habit">Create/Edit Habit</string>
     <string name="set_reminder_optional">Set Reminder Time (Optional)</string>
     <string name="choose_icon">Choose Icon</string>
     <string name="habit_tracker_application">Habit Tracker Application</string>
+    <string name="cancel">Cancel</string>
+    <string name="calendar_view">Calendar View</string>
+    <string name="delete">Delete</string>
 </resources>
