@@ -1,12 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.habittrackerapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.habittrackerapp"
@@ -28,12 +29,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+    }
+    buildFeatures {
+        compose = true
     }
 }
 
@@ -51,6 +55,9 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.material3.android)
     annotationProcessor(libs.androidx.room.compiler)
 
     // To use Kotlin Symbol Processing (KSP)
@@ -76,4 +83,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.androidx.junit.v115)
+
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+
+
 }
