@@ -112,9 +112,11 @@ class CalendarDialogFragment() : DialogFragment() {
         onClose: () -> Unit
     ) {
         val today = LocalDate.now()
-        val currentMonth = YearMonth.now()
-        val daysInMonth = currentMonth.lengthOfMonth()
-        val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
+        //val currentMonth = YearMonth.now()
+        val currentMonth = remember {mutableStateOf(YearMonth.now())}
+
+//        val daysInMonth = currentMonth.lengthOfMonth()
+//        val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
 
         // Track completed dates
         val markedDates = remember { mutableStateOf(setOf<LocalDate>()) }
@@ -148,29 +150,87 @@ class CalendarDialogFragment() : DialogFragment() {
             markedDates.value = validDates
         }
 
-        Column(modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
-            // Header
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            // Header displaying the current month
             Text(
-                text = "${currentMonth.month} ${currentMonth.year}",
+                text = "${currentMonth.value.month} ${currentMonth.value.year}",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Calendar Grid
-            LazyVerticalGrid(columns = GridCells.Fixed(7), modifier = Modifier.weight(1f)) {
-                // Empty cells before the first day of the month
-                items(firstDayOfWeek) {
-                    Spacer(modifier = Modifier.size(40.dp))
+            CalendarGrid(
+                currentMonth = currentMonth.value,
+                markedDates = markedDates.value,
+                onMarkComplete = onMarkComplete
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Previous and Next buttons in a row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = { currentMonth.value = currentMonth.value.minusMonths(1) }) {
+                    Text(text = "Previous")
                 }
-                // Days of the month
+
+                Button(onClick = { currentMonth.value = currentMonth.value.plusMonths(1) }) {
+                    Text(text = "Next")
+                }
+            }
+
+            // Mark Today Complete and Close buttons
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    onClick = {
+                        if (today !in markedDates.value) {
+                            onMarkComplete(today)
+                            markedDates.value = markedDates.value + today
+                        }
+                    },
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    Text(text = "Mark Today Complete")
+                }
+
+                Button(onClick = onClose, modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text(text = "Close")
+                }
+        }
+    }
+
+}
+
+    @Composable
+    fun CalendarGrid(currentMonth: YearMonth?, markedDates: Set<LocalDate>, onMarkComplete: (LocalDate) -> Unit) {
+        val today = LocalDate.now()
+        val daysInMonth = currentMonth?.lengthOfMonth()
+        val firstDayOfWeek = currentMonth!!.atDay(1).dayOfWeek.value % 7
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(7),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // Add empty cells for days before the first day of the month
+            items(firstDayOfWeek) {
+                Spacer(modifier = Modifier.size(40.dp)) // Empty space
+            }
+
+            // Add the actual days of the month
+            if (daysInMonth != null) {
                 items(daysInMonth) { day ->
                     val date = currentMonth.atDay(day + 1)
-                    val isCompleted = date in markedDates.value
-                    val isToday = date == LocalDate.now()
+                    val isCompleted = date in markedDates
+                    val isToday = date == today
 
                     Box(
                         modifier = Modifier
@@ -178,43 +238,23 @@ class CalendarDialogFragment() : DialogFragment() {
                             .background(
                                 color = when {
                                     isCompleted -> Color.Green
-                                    isToday -> Color.Blue // Highlight today's date
+                                    isToday -> Color.Blue
                                     else -> Color.LightGray
                                 },
                                 shape = RoundedCornerShape(8.dp)
-                            )
-                            .clickable(enabled = false) { }, // Disable direct clicking
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "${day + 1}",
-                            color = if (isCompleted) Color.White else Color.Black,
+                            color = if (isCompleted || isToday) Color.White else Color.Black,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
             }
-
-            // Mark Today Complete Button
-            Button(
-                onClick = {
-                    if (today !in markedDates.value) {
-                        onMarkComplete(today)
-                        markedDates.value = markedDates.value + today
-                    }
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "Mark Today Complete")
-            }
-
-            // Close Button
-            Button(
-                onClick = onClose,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "Close")
-            }
         }
+
     }
 }
+
