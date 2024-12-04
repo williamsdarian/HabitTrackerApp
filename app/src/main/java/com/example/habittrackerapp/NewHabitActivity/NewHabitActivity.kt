@@ -38,7 +38,7 @@ class NewHabitActivity : AppCompatActivity() {
     private var dueDate: Long = 0L
     private var isComplete: Boolean = false
     val newHabitViewModel: NewHabitViewModel by viewModels {
-        NewHabitViewModelFactory((application as HabitsApplication).repository)
+        NewHabitViewModel.NewHabitViewModelFactory((application as HabitsApplication).repository)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -62,7 +62,9 @@ class NewHabitActivity : AppCompatActivity() {
         val id = intent.getIntExtra("EXTRA_ID",-1)
         //If it doesn't exist, create a new Word object
         if(id == -1){
-            habit = Habit(null,"", "", "", false)
+            habit = Habit(
+                null, "", "", "", false, emptyList()
+            )
         }else{
             //Otherwise, start the viewModel with the id
             //And begin observing the word to set the text in the
@@ -89,7 +91,7 @@ class NewHabitActivity : AppCompatActivity() {
         saveButton.setOnClickListener {
             val replyIntent = Intent()
             if (TextUtils.isEmpty(editTitleView.text)) {
-                setResult(Activity.RESULT_CANCELED, replyIntent)
+                setResult(RESULT_CANCELED, replyIntent)
                 Toast.makeText(this, "No title, habit not saved!", Toast.LENGTH_SHORT).show()
             } else {
                 //If text isn't empty, determine whether to update
@@ -98,9 +100,9 @@ class NewHabitActivity : AppCompatActivity() {
                 val detail = editWordDetail.text.toString()
                 val date = editTextDate.text.toString()
                 if (id > -1) {
-                    newHabitViewModel.update(Habit(id, title, detail, date, isComplete))
+                    newHabitViewModel.update(Habit(id, title, detail, date, isComplete, emptyList()))
                 } else {
-                    newHabitViewModel.insert(Habit(null, title, detail, date, isComplete))
+                    newHabitViewModel.insert(Habit(null, title, detail, date, isComplete, emptyList()))
                 }
 
                 // Schedule the reminder if the due date is in the future
@@ -123,7 +125,7 @@ class NewHabitActivity : AppCompatActivity() {
 
                 }
 
-                setResult(Activity.RESULT_OK)
+                setResult(RESULT_OK)
             }
             //End the activity
             finish()
@@ -137,8 +139,8 @@ class NewHabitActivity : AppCompatActivity() {
                 .setMessage("Are you sure you want to delete this habit?")
                 .setPositiveButton("Yes") { dialog, which ->
                     if(id != -1) {
-                        newHabitViewModel.delete(Habit(id, editTitleView.text.toString(), editWordDetail.text.toString(),editTextDate.text.toString(), isComplete))
-                        setResult(Activity.RESULT_OK)
+                        newHabitViewModel.delete(Habit(id, editTitleView.text.toString(), editWordDetail.text.toString(),editTextDate.text.toString(), isComplete, emptyList()))
+                        setResult(RESULT_OK)
                         finish()
                     }
                 }
@@ -154,13 +156,14 @@ class NewHabitActivity : AppCompatActivity() {
 
         val calendarViewButton = findViewById<Button>(R.id.calendarView)
         calendarViewButton.setOnClickListener{
-            CalendarDialogFragment.showDialog(supportFragmentManager)
+            newHabitViewModel.loadCompletedDates(habit.id!!)
+            CalendarDialogFragment.showDialog(supportFragmentManager, habit)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun setReminder(taskName: String, timeInMillis: Long) {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, HabitReminderReceiver::class.java).apply {
             putExtra("taskName", taskName)
         }
@@ -216,4 +219,5 @@ class NewHabitActivity : AppCompatActivity() {
         editTextDate.setText(selectedTime)
         dueDate = calendar.timeInMillis
     }
+
 }

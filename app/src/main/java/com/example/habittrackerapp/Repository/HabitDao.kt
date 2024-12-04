@@ -26,4 +26,8 @@ interface HabitDao {
 
     @Query("DELETE FROM habit_table WHERE id = :id")
     suspend fun deleteHabitById(id: Int)
+
+    @Query("SELECT completedDates FROM habit_table WHERE id = :habitId")
+    suspend fun getCompletedDates(habitId: Int): List<String>
+
 }

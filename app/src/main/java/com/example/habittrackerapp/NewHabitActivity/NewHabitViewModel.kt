@@ -18,6 +18,9 @@ class NewHabitViewModel(private val repository: HabitRepository) : ViewModel() {
     val word: LiveData<Habit>
         get() = _habit
 
+    private val _completedDates = MutableLiveData<List<String>>()
+    val completedDates: LiveData<List<String>> get() = _completedDates
+
     fun start(habitId:Int){
         viewModelScope.launch {
             repository.allHabits.collect{
@@ -37,9 +40,14 @@ class NewHabitViewModel(private val repository: HabitRepository) : ViewModel() {
     fun delete(habit: Habit) = viewModelScope.launch {
         repository.deleteHabitById(habit)
     }
-}
 
-class NewHabitViewModelFactory(private val repository: HabitRepository) : ViewModelProvider.Factory {
+    fun loadCompletedDates(habitId: Int) {
+        viewModelScope.launch {
+            _completedDates.value = repository.getCompletedDates(habitId)
+        }
+    }
+
+    class NewHabitViewModelFactory(private val repository: HabitRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewHabitViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
@@ -47,4 +55,5 @@ class NewHabitViewModelFactory(private val repository: HabitRepository) : ViewMo
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
+}
 }

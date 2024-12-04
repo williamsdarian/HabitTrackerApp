@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Habit::class), version = 1, exportSchema = false)
-
+@Database(entities = arrayOf(Habit::class), version = 2, exportSchema = false)
+@TypeConverters(Converters::class)
 public abstract class HabitRoomDatabase: RoomDatabase() {
     abstract fun habitDao(): HabitDao
 
@@ -54,9 +56,9 @@ public abstract class HabitRoomDatabase: RoomDatabase() {
             habitDao.deleteAll()
 
             // Add sample words.
-            var word = Habit(null,"Hello", "Basic description", "", false)
+            var word = Habit(null,"Hello", "Basic description", "", false, emptyList())
             habitDao.insert(word)
-            word = Habit(null,"World!", "Lorem Ipsum Dolor...", "", false)
+            word = Habit(null,"World!", "Lorem Ipsum Dolor...", "", false, emptyList())
             habitDao.insert(word)
 
             // TODO: Add your own words!

@@ -1,6 +1,7 @@
 package com.example.habittrackerapp.Calendar
 
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,11 +33,11 @@ import androidx.compose.ui.platform.ComposeView
 import java.time.LocalDate
 import java.time.YearMonth
 import com.example.habittrackerapp.Calendar.ui.theme.DynamicCalendarTheme
+import com.example.habittrackerapp.Repository.Habit
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarDialogFragment(
-) : DialogFragment() {
+class CalendarDialogFragment() : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -43,9 +45,14 @@ class CalendarDialogFragment(
             setContentView(ComposeView(requireContext()).apply {
                 setContent {
                     DynamicCalendarTheme {
+                        val completedDates = arguments
+                            ?.getStringArrayList("completedDates")
+                            ?.toList() ?: emptyList()
+
                         Scaffold(modifier = Modifier.padding(16.dp)) { innerPadding ->
                             DynamicCalendar(
-                                modifier = Modifier.padding(innerPadding)
+                                modifier = Modifier.padding(innerPadding),
+                                completedDates = completedDates
                             )
                         }
                     }
@@ -55,16 +62,20 @@ class CalendarDialogFragment(
     }
 
     companion object {
-        fun showDialog(fragmentManager: FragmentManager) {
+        fun showDialog(fragmentManager: FragmentManager, habit: Habit) {
             val dialogFragment = CalendarDialogFragment()
+            val args = Bundle().apply {
+                putStringArrayList("completedDates", ArrayList(habit.completedDates))
+            }
+            dialogFragment.arguments = args
             dialogFragment.show(fragmentManager, "calendar_dialog")
-        }
     }
 
+    @SuppressLint("RememberReturnType", "MutableCollectionMutableState")
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
-    fun DynamicCalendar(modifier: Modifier = Modifier) {
-        val completedDates = remember { mutableStateMapOf<LocalDate, Boolean>() }
+    fun DynamicCalendar(modifier: Modifier = Modifier, completedDates: List<String>) {
+        val completedDates = remember { completedDates.map { LocalDate.parse(it) }.toSet() }
         val today = LocalDate.now()
         val currentMonth = YearMonth.now()
 
@@ -100,7 +111,7 @@ class CalendarDialogFragment(
                 // Add the actual days of the month
                 items(daysInMonth) { day ->
                     val date = currentMonth.atDay(day + 1)
-                    val isCompleted = completedDates[date] ?: false
+                    val isCompleted = date in completedDates
 
                     Box(
                         contentAlignment = Alignment.Center,
@@ -122,15 +133,22 @@ class CalendarDialogFragment(
                 }
             }
 
-            // Mark Today Button
+            val mutableCompletedDates = remember { mutableStateOf(completedDates.toMutableSet()) }
+
             Button(
                 onClick = {
-                    completedDates[today] = !(completedDates[today] ?: false) },
+                    if (today in mutableCompletedDates.value) {
+                        mutableCompletedDates.value.remove(today)
+                    } else {
+                        mutableCompletedDates.value.add(today)
+                    }
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                val buttonText = if (completedDates[today] == true) "Undo" else "Mark Today Complete"
+                val buttonText = if (today in mutableCompletedDates.value) "Undo" else "Mark Today Complete"
                 Text(buttonText)
             }
         }
     }
+}
 }

@@ -10,5 +10,6 @@ data class Habit (
     @ColumnInfo(name="title") val title:String,
     @ColumnInfo(name="desc") val desc:String,
     @ColumnInfo(name="date") val date:String,
-    @ColumnInfo(name="isComplete") val isComplete:Boolean
+    @ColumnInfo(name="isComplete") val isComplete:Boolean,
+    @ColumnInfo(name="completedDates") val completedDates: List<String>
 )

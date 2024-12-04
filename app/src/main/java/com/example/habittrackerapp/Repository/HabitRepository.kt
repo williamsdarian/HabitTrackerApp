@@ -27,4 +27,11 @@ class HabitRepository(private val habitDao: HabitDao) {
     suspend fun deleteHabitById(habit: Habit) {
         habit.id?.let { habitDao.deleteHabitById(it) }
     }
+
+    @WorkerThread
+    suspend fun getCompletedDates(habitId: Int): List<String> {
+        return habitDao.getCompletedDates(habitId)
+    }
+
+
 }
