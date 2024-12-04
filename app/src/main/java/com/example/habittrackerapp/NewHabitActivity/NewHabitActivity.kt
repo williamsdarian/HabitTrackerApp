@@ -12,6 +12,7 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -27,6 +28,9 @@ import com.example.habittrackerapp.R
 import com.example.habittrackerapp.Repository.Habit
 import com.example.habittrackerapp.HabitsApplication
 import com.example.habittrackerapp.MainActivity.HabitReminderReceiver
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
 
 class NewHabitActivity : AppCompatActivity() {
 
@@ -51,6 +55,7 @@ class NewHabitActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         editTitleView = findViewById(R.id.edit_habit_name)
         editWordDetail = findViewById(R.id.edit_content)
         editTextDate = findViewById(R.id.edit_reminder)
@@ -59,19 +64,19 @@ class NewHabitActivity : AppCompatActivity() {
         //Logic block to determine whether we are updating an exiting word
         //Or creating a new word
         //Get intent that created the activity id value, if exists
-        val id = intent.getIntExtra("EXTRA_ID",-1)
+        val id = intent.getIntExtra("EXTRA_ID", -1)
         //If it doesn't exist, create a new Word object
-        if(id == -1){
+        if (id == -1) {
             habit = Habit(
                 null, "", "", "", false, emptyList()
             )
-        }else{
+        } else {
             //Otherwise, start the viewModel with the id
             //And begin observing the word to set the text in the
             //text view
             newHabitViewModel.start(id)
-            newHabitViewModel.word.observe(this){
-                if(it != null){
+            newHabitViewModel.word.observe(this) {
+                if (it != null) {
                     editTitleView.setText(it.title)
                     editWordDetail.setText(it.desc)
                     editTextDate.setText((it.date))
@@ -80,7 +85,7 @@ class NewHabitActivity : AppCompatActivity() {
             }
         }
 
-        editTextDate.setOnClickListener{
+        editTextDate.setOnClickListener {
             showTimePickerDialog()
         }
 
@@ -99,10 +104,30 @@ class NewHabitActivity : AppCompatActivity() {
                 val title = editTitleView.text.toString()
                 val detail = editWordDetail.text.toString()
                 val date = editTextDate.text.toString()
+                val currentCompletedDates = newHabitViewModel.word.value?.completedDates ?: emptyList()
+                Log.d("NewHabitActivity", "Current Completed Dates for update: $currentCompletedDates")
                 if (id > -1) {
-                    newHabitViewModel.update(Habit(id, title, detail, date, isComplete, emptyList()))
+                    newHabitViewModel.update(
+                        Habit(
+                            id,
+                            title,
+                            detail,
+                            date,
+                            isComplete,
+                            currentCompletedDates
+                        )
+                    )
                 } else {
-                    newHabitViewModel.insert(Habit(null, title, detail, date, isComplete, emptyList()))
+                    newHabitViewModel.insert(
+                        Habit(
+                            null,
+                            title,
+                            detail,
+                            date,
+                            isComplete,
+                            emptyList()
+                        )
+                    )
                 }
 
                 // Schedule the reminder if the due date is in the future
@@ -110,8 +135,7 @@ class NewHabitActivity : AppCompatActivity() {
                     setReminder(title, dueDate)
                 }
                 // IF the user did not set a time reminder, then set one for 9am next day
-                else if (dueDate == 0L || editWordDetail.text.toString() == "")
-                {
+                else if (dueDate == 0L || editWordDetail.text.toString() == "") {
                     // Set a notification for the next day at 9 AM
                     val calendar = Calendar.getInstance()
                     calendar.add(Calendar.DAY_OF_YEAR, 1)
@@ -138,8 +162,17 @@ class NewHabitActivity : AppCompatActivity() {
                 .setTitle("Delete Task")
                 .setMessage("Are you sure you want to delete this habit?")
                 .setPositiveButton("Yes") { dialog, which ->
-                    if(id != -1) {
-                        newHabitViewModel.delete(Habit(id, editTitleView.text.toString(), editWordDetail.text.toString(),editTextDate.text.toString(), isComplete, emptyList()))
+                    if (id != -1) {
+                        newHabitViewModel.delete(
+                            Habit(
+                                id,
+                                editTitleView.text.toString(),
+                                editWordDetail.text.toString(),
+                                editTextDate.text.toString(),
+                                isComplete,
+                                emptyList()
+                            )
+                        )
                         setResult(RESULT_OK)
                         finish()
                     }
@@ -155,9 +188,20 @@ class NewHabitActivity : AppCompatActivity() {
         }
 
         val calendarViewButton = findViewById<Button>(R.id.calendarView)
-        calendarViewButton.setOnClickListener{
-            newHabitViewModel.loadCompletedDates(habit.id!!)
-            CalendarDialogFragment.showDialog(supportFragmentManager, habit)
+        calendarViewButton.setOnClickListener {
+            val id = intent.getIntExtra("EXTRA_ID", -1)
+            if (id != -1) {
+                lifecycleScope.launch {
+                    val completedDates = newHabitViewModel.getCompletedDates(id)
+                    CalendarDialogFragment.showDialog(
+                        supportFragmentManager,
+                        completedDates,
+                        id
+                    )
+                }
+            } else {
+                Toast.makeText(this, "Invalid habit ID", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -219,5 +263,8 @@ class NewHabitActivity : AppCompatActivity() {
         editTextDate.setText(selectedTime)
         dueDate = calendar.timeInMillis
     }
+
+
+
 
 }

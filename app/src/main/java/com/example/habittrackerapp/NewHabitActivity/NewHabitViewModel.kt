@@ -1,5 +1,6 @@
 package com.example.habittrackerapp.NewHabitActivity
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import com.example.habittrackerapp.Repository.Habit
 import com.example.habittrackerapp.Repository.HabitRepository
+import java.time.LocalDate
 
 
 class NewHabitViewModel(private val repository: HabitRepository) : ViewModel() {
@@ -41,9 +43,24 @@ class NewHabitViewModel(private val repository: HabitRepository) : ViewModel() {
         repository.deleteHabitById(habit)
     }
 
-    fun loadCompletedDates(habitId: Int) {
+
+    suspend fun getCompletedDates(habitId: Int): List<String> {
+        return repository.getCompletedDates(habitId) // Returns List<LocalDate>
+    }
+
+
+    fun updateCompletedDates(habitId: Int, date: String) {
         viewModelScope.launch {
-            _completedDates.value = repository.getCompletedDates(habitId)
+            val completedDates = repository.getCompletedDates(habitId).toMutableList()
+
+            // Clean the list to remove invalid entries
+            completedDates.removeAll { it.isBlank() || it == "[]" }
+
+            if (date !in completedDates) {
+                completedDates.add(date)
+                Log.d("UpdateDates", "Saving cleaned completedDates: $completedDates for habitId: $habitId")
+                repository.updateCompletedDates(habitId, completedDates)
+            }
         }
     }
 

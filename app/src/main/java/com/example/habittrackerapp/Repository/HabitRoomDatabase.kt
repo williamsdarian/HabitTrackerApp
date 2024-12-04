@@ -61,7 +61,11 @@ public abstract class HabitRoomDatabase: RoomDatabase() {
             word = Habit(null,"World!", "Lorem Ipsum Dolor...", "", false, emptyList())
             habitDao.insert(word)
 
-            // TODO: Add your own words!
+
+
+
+        //when implenting the streaks in a ideal workflow the user will never be able to slkect a date further than the current day, thus the streak number can be determined by taking the total number of consecutive compelted dayas
+        //for testing purposes we can jsut do it witha  counter adn have it preset ot have 1,2,3,4 of decmeber all filled out. and then we can have another task that breaks and just hard code whatevver we decide the streak to be
         }
     }
 }

@@ -13,4 +13,16 @@
         android:background="@color/primary_color"
         android:textColor="@android:color/white">
     </TextView>
+
+    <TextView
+        android:id="@+id/streakView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Streak: 0"
+        android:textSize="16sp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp" />
+
+
+
 </LinearLayout>

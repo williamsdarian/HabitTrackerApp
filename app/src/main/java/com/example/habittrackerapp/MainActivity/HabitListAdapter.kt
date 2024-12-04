@@ -1,7 +1,9 @@
 package com.example.habittrackerapp.MainActivity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import com.example.habittrackerapp.Util.StreakCalculator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,12 +44,13 @@ class HabitListAdapter(
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
         //Get the item in a position
         val current = getItem(position)
+        val streak = StreakCalculator.calculateStreak(current.completedDates) // Calculate streak
         //Set its onClickListener to the class callback parameter
         holder.itemView.setOnClickListener {
             current.id?.let { it1 -> onItemClicked(it1) }
         }
         //Bind the item to the holder
-        holder.bind(current)
+        holder.bind(current, streak)
     }
 
     /**
@@ -59,13 +62,18 @@ class HabitListAdapter(
 
         //Reference to the textView object
         private val wordItemView: TextView = itemView.findViewById(R.id.textView)
+        private val streakView: TextView = itemView.findViewById(R.id.streakView) // Add this for the streak
+
 
         /**
          * bind binds a word object's data to views
          */
-        fun bind(habit: Habit?) {
+        @SuppressLint("SetTextI18n")
+        fun bind(habit: Habit?, streak: Int) {
             if (habit != null) {
                 wordItemView.text = habit.title
+                streakView.text = "Streak: $streak" // Display the streak
+
             }
         }
 
