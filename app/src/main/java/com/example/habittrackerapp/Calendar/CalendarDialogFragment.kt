@@ -122,13 +122,14 @@ class CalendarDialogFragment(
                 }
             }
 
-            // Completion Button
+            // Mark Today Button
             Button(
-
-                onClick = { completedDates[today] = true },
+                onClick = {
+                    completedDates[today] = !(completedDates[today] ?: false) },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(text = "Mark Today Complete")
+                val buttonText = if (completedDates[today] == true) "Undo" else "Mark Today Complete"
+                Text(buttonText)
             }
         }
     }
