@@ -40,22 +40,4 @@ interface HabitDao {
     @Query("UPDATE habit_table SET completedDates = :completedDates WHERE id = :habitId")
     suspend fun updateCompletedDates(habitId: Int, completedDates: List<String>)
 
-
-
-
-
-
-
-
-    // TODO: below are functions for utilizing localDate
-
-//    //query to updateCompletedDates
-//    @Query("UPDATE habit_table SET completedDates = :completedDates WHERE id = :habitId")
-//    suspend fun updateCompletedDates(habitId: Int, completedDates: List<LocalDate>)
-//
-//
-//    //query to retrieve list of completed dates
-//    @Query("SELECT completedDates FROM habit_table WHERE id = :habitId")
-//    suspend fun getCompletedDates(habitId: Int): List<LocalDate?>
-
 }

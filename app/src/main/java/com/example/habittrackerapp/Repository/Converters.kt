@@ -35,9 +35,4 @@ class Converters {
         }
     }
 
-    // Helper function to clean up entries
-    private fun sanitizeEntry(entry: String): String {
-        return entry.trim().removeSurrounding("[\"").removeSurrounding("\"]")
-    }
-
 }
