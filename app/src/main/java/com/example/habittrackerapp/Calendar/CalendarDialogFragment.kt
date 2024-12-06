@@ -115,8 +115,6 @@ class CalendarDialogFragment() : DialogFragment() {
         //val currentMonth = YearMonth.now()
         val currentMonth = remember {mutableStateOf(YearMonth.now())}
 
-//        val daysInMonth = currentMonth.lengthOfMonth()
-//        val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
 
         // Track completed dates
         val markedDates = remember { mutableStateOf(setOf<LocalDate>()) }

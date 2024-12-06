@@ -29,6 +29,7 @@ import com.example.habittrackerapp.Repository.Habit
 import com.example.habittrackerapp.HabitsApplication
 import com.example.habittrackerapp.MainActivity.HabitReminderReceiver
 import androidx.lifecycle.lifecycleScope
+import com.example.habittrackerapp.MainActivity.MainActivity
 import kotlinx.coroutines.launch
 
 
@@ -156,7 +157,7 @@ class NewHabitActivity : AppCompatActivity() {
         }
 
         // Delete a task and prompt the user to confirm deletion
-        val deleteButton = findViewById<Button>(R.id.button_cancel_habit)
+        val deleteButton = findViewById<Button>(R.id.button_delete_habit)
         deleteButton.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Delete Task")
@@ -182,9 +183,10 @@ class NewHabitActivity : AppCompatActivity() {
         }
 
         // Get task data and share as text
-        val chooseIconButton = findViewById<Button>(R.id.icon_selector)
-        chooseIconButton.setOnClickListener {
-            // **TO-DO** Add functionality for this
+        val cancelButton = findViewById<Button>(R.id.cancel_button)
+        cancelButton.setOnClickListener {
+            setResult(RESULT_OK)
+            finish()
         }
 
         val calendarViewButton = findViewById<Button>(R.id.calendarView)
@@ -217,7 +219,7 @@ class NewHabitActivity : AppCompatActivity() {
         )
 
         if (alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
             Toast.makeText(this, "Reminder set for $taskName", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Cannot set exact alarms without permission", Toast.LENGTH_SHORT).show()
@@ -263,8 +265,4 @@ class NewHabitActivity : AppCompatActivity() {
         editTextDate.setText(selectedTime)
         dueDate = calendar.timeInMillis
     }
-
-
-
-
 }

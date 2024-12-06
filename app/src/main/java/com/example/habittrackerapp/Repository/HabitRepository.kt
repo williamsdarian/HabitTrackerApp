@@ -43,8 +43,6 @@ class HabitRepository(private val habitDao: HabitDao) {
     suspend fun getCompletedDates(habitId: Int): List<String> {
         val rawDates = habitDao.getCompletedDates(habitId)
         Log.d("RawData", "Raw completedDates from DB: $rawDates for habitId: $habitId")
-//        val cleanedDates = rawDates.filterNot { it.isEmpty() || it.startsWith("[") } // Remove invalid entries
-//        Log.d("GetDates", "Loaded cleaned completedDates: $cleanedDates for habitId: $habitId")
         return rawDates
     }
 
@@ -71,11 +69,4 @@ class HabitRepository(private val habitDao: HabitDao) {
         Log.d("Repository", "habitID = $habitId")
         Log.d("Repository", "Saved Dates After Update: $savedDates")
     }
-
-
-    // Helper function for sanitizing entries
-    private fun sanitizeEntry(entry: String): String {
-        return entry.trim().removeSurrounding("[\"").removeSurrounding("\"]")
-    }
-
 }
