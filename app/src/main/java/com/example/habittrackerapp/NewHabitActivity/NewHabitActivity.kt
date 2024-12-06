@@ -265,8 +265,4 @@ class NewHabitActivity : AppCompatActivity() {
         editTextDate.setText(selectedTime)
         dueDate = calendar.timeInMillis
     }
-
-
-
-
 }

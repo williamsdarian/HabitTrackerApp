@@ -69,6 +69,4 @@ class HabitRepository(private val habitDao: HabitDao) {
         Log.d("Repository", "habitID = $habitId")
         Log.d("Repository", "Saved Dates After Update: $savedDates")
     }
-
-
 }
